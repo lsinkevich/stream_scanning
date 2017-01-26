@@ -78,7 +78,7 @@ BEGIN
   where c1.group_val = 'Y' and c2.group_val is null and c2.parent_id = c1.id;
  
   select max(dim.id) into byrId from dimension dim 
-  where dim.DIMCODE = 'BYR';
+  where dim.dimcode = 'BYR';
     
   select nvl(max(a.code),' ') as acc, nvl(max(ac1.value),0) as user_id into tmpPilot, tmpUser1
   from (select max(dimension1.id) as ID from dimension1, acct where dimension1.name = '123' and acct.id = dimension1.acc_id) dimension11,
@@ -128,7 +128,7 @@ BEGIN
   -- Field checking 4 --
   tmp := 0;
   select nvl(max(dim.id),0) into tmp from dimension dim 
-  where dim.DIMCODE = p_BenAirport and dim.parent_id is not null;
+  where dim.dimcode = p_BenAirport and dim.parent_id is not null;
  
   case
     when trim(p_BenAirport) is null then
