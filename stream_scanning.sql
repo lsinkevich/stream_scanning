@@ -163,7 +163,7 @@ BEGIN
     else baccValue := 'Y';
   end case;
     
-    - Field checking 6 --
+  -- Field checking 6 --
   case
     when trim(p_BenHangar_Number) is null then
       bbillError := 'The ben hangar number is absent';
