@@ -37,6 +37,7 @@ IS
     baccError       VARCHAR2(1000);
     bbillError      VARCHAR2(1000);
     userError       VARCHAR2(1000);
+
 BEGIN
     
     ptValue         := p_TypeDoc;
@@ -98,7 +99,7 @@ BEGIN
  
   -- Field checking 1 --
   select nvl(max(dim.id),0) into tmp from dimension dim 
-  where dim.DIMCODE = p_Airport and dim.parent_id is not null;
+  where dim.dimcode = p_Airport and dim.parent_id is not null;
  
   case
     when trim(p_Airport) is null then
@@ -195,5 +196,5 @@ BEGIN
     union all
     select 'Administrator' as name, userValue as value, userError as error from dual
   ;
-  RETURN curs;
+  return curs;
 END;
