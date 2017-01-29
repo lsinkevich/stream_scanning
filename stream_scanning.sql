@@ -78,11 +78,13 @@ BEGIN
   where c1.group_val = 'Y' and c2.group_val is null and c2.parent_id = c1.id;
  
   select max(dim.id) into byrId from dimension dim 
-  where dim.dimcode = 'BYR';
+  where dim.dimcode = 'byr' and dim.dim_code = 'currency';
     
   select nvl(max(a.code),' ') as acc, nvl(max(ac1.value),0) as user_id into tmpPilot, tmpUser1
-  from (select max(dimension1.id) as ID from dimension1, acct where dimension1.name = '123' and acct.id = dimension1.acc_id) dimension11,
-  (select max(dimension1.id) as ID from dimension1, acct where dimension1.name = '124' and acct.id = dimension1.acc_id) dimension12,
+  from (select max(dimension1.id) as ID from dimension1, acct 
+        where dimension1.name = '123' and acct.id = dimension1.acc_id) dimension11,
+       (select max(dimension1.id) as ID from dimension1, acct 
+        where dimension1.name = '124' and acct.id = dimension1.acc_id) dimension12,
   account a,
   dimension2 ac1,
   dimension2 ac2
@@ -90,10 +92,12 @@ BEGIN
     and a.cur_id = byrId
     and ac1.account_id = a.id
     and ac1.element_id = dimension11.id
-    and not exists (select 1 from dimension2 acs where ac1.account_id = acs.account_id and ac1.id < acs.id)
+    and not exists (select 1 from dimension2 acs where ac1.account_id = acs.account_id 
+                    and ac1.id < acs.id and trunc(ac1.datestat) <= trunc(acs.datestat))
     and ac2.account_id = a.id
     and ac2.element_id = dimension12.id
-    and not exists (select 1 from dimension2 acs where ac2.element_id = acs.account_id and ac2.id < acs.id)
+    and not exists (select 1 from dimension2 acs where ac2.element_id = acs.account_id 
+                    and ac2.id < acs.id and trunc(ac2.datestat) <= trunc(acs.datestat))
   ;
   userValue := to_char(tmpUser1);
  
@@ -140,8 +144,10 @@ BEGIN
  
   -- Field checking 5 --
   select nvl(max(a.code),' ') as acc, nvl(max(ac1.value),0) as user_id into tmpPilot, tmpUser2
-  from (select max(dimension1.id) as ID from dimension1, acct where dimension1.name = '123' and acct.id = dimension1.acc_id) dimension11,
-  (select max(dimension1.id) as ID from dimension1, acct where dimension1.name = '124' and acct.id = dimension1.acc_id) dimension12,
+  from (select max(dimension1.id) as ID from dimension1, acct 
+        where dimension1.name = '123' and acct.id = dimension1.acc_id) dimension11,
+       (select max(dimension1.id) as ID from dimension1, acct 
+        where dimension1.name = '124' and acct.id = dimension1.acc_id) dimension12,
   account a,
   dimension2 ac1,
   dimension2 ac2
@@ -149,10 +155,12 @@ BEGIN
     and a.cur_id = byrId
     and ac1.account_id = a.id
     and ac1.element_id = dimension11.id
-    and not exists (select 1 from dimension2 acs where ac1.account_id = acs.account_id and ac1.id < acs.id)
+    and not exists (select 1 from dimension2 acs where ac1.account_id = acs.account_id 
+                    and ac1.id < acs.id and trunc(ac1.datestat) <= trunc(acs.datestat))
     and ac2.account_id = a.id
     and ac2.element_id = dimension12.id
-    and not exists (select 1 from dimension2 acs where ac2.element_id = acs.account_id and ac2.id < acs.id)
+    and not exists (select 1 from dimension2 acs where ac2.element_id = acs.account_id 
+                    and ac2.id < acs.id and trunc(ac2.datestat) <= trunc(acs.datestat))
   ;
  
   case
@@ -167,7 +175,8 @@ BEGIN
   case
     when trim(p_BenHangar_Number) is null then
       bbillError := 'The ben hangar number is absent';
-    when checkBudget = '1' and baccValue = 'Y' and (trim(p_BenHangar_Number) is null or length(trim(p_BenHangar_Number)) > 10) then
+    when checkBudget = '1' and baccValue = 'Y' 
+    and (trim(p_BenHangar_Number) is null or length(trim(p_BenHangar_Number)) > 10) then
       bbillError := 'The code is not adequate';
     else bbillValue := 'Y';
   end case;
